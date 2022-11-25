@@ -1,4 +1,4 @@
-.container {
+.container #intro{
     display: flex;
     background-color: rgb(127, 127, 253);
     flex-direction: column;
@@ -20,4 +20,7 @@
     border-radius: 15px;
     font-size: 22px;
     background-color: rgb(54, 222, 104);
+}
+#question1{
+    
 }
