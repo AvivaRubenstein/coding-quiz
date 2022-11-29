@@ -1,10 +1,11 @@
 var container = document.querySelector(".container");
-var correct = document.querySelector(".correct");
+var correct; 
 var question = document.createElement("h1");
 var choice1 = document.createElement("button");
 var choice2 = document.createElement("button");
 var choice3 = document.createElement("button");
 var choice4 = document.createElement("button");
+console.log(correct);
 
 var h1  = document.createElement("h1");
 h1.innerHTML=" <h1>Coding Quiz Challenge</h1>";
@@ -32,7 +33,7 @@ begin.addEventListener("click", function (event){
     container.appendChild(question);
     
     //the correct answer is identified here with the class "correct" so that we can treat all correct answers the same when when clicked
-    choice1.innerHTML="<button class = 'choice' class = 'correct'> event.stopPropogation()</button>";
+    choice1.innerHTML="<button class = 'choice' id = 'correct'> event.stopPropogation()</button>";
     container.appendChild(choice1);
    
     choice2.innerHTML="<button class = 'choice'>event.stopBubbling()</button>";
@@ -43,10 +44,12 @@ begin.addEventListener("click", function (event){
    
     choice4.innerHTML="<button class = 'choice'>event.preventDefault()</button>";
     container.appendChild(choice4);
-   
-})
-
+ correct = document.querySelector("#correct");  
+ //error with this line:  maybe because .correct only becomes a class after the first click???
 correct.addEventListener("click", function(event) {
     correct.setAttribute("style", "background-color: #00ff00;");
 
 })
+})
+
+
