@@ -7,6 +7,10 @@ var choice4 = document.createElement("button");
 var correct;
 var incorrect;
 var choice;
+var btnClicked;
+//start with the numRight and Wrong equal to 0, need to increment the relvant var by 1 after each answer
+var numRight=0;
+var numWrong=0;
 
 
 var h1 = document.createElement("h1");
@@ -22,10 +26,12 @@ container.appendChild(begin);
 
 //when called, this function will clear the HTML content from the intro
 function clearHTML() {
-    h1.innerHTML = "";
-    p.innerHTML = "";
+    $("h1").remove();
+    $("p").remove();
     begin.innerHTML = "<button id = 'next' > Next Question </button>";
 }
+
+
 
 //when the begin button is pressed, the intro content will disappear and the first question will be displayed.
 begin.addEventListener("click", function (event) {
@@ -34,6 +40,8 @@ begin.addEventListener("click", function (event) {
     //they are declared as variables at the top of the page so we aren't limited by scope
     //the HTML content for each is put in with .innerHTML, and we must append them to the container for them to actually become part of the HTML file
     switchQuestion();
+    //this sets the timer function (see function below)
+    setTime();
     question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
     container.appendChild(question);
     var text = "text";
@@ -44,7 +52,7 @@ begin.addEventListener("click", function (event) {
     choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
     container.appendChild(choice2);
 
-    choice3.innerHTML = `<button class = 'choice'>${questionBlock.ans3}</button>`;
+    choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
     container.appendChild(choice3);
 
     choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
@@ -57,22 +65,32 @@ begin.addEventListener("click", function (event) {
     currentQ++;
 
 
+    container.addEventListener("click", function (event) {
+        for (x = 0; x < incorrect.length; x++) {
+            btnClicked = event.target;
+            if (btnClicked === correct) {
+                correct.setAttribute("style", "background-color: #00ff00;");
+            } else if (btnClicked === incorrect[x]) {
+                incorrect[x].setAttribute("style", "background-color: #C93516");
+            }
+        }
+    }); 
 
+
+    choice = document.querySelectorAll(".choice");
     correct = document.querySelector("#correct");
-    correct.addEventListener("click", function (event) {
-        event.target.setAttribute("style", "background-color: #00ff00;");
+    // correct.addEventListener("click", function (event) {
+    //     event.target.setAttribute("style", "background-color: #00ff00;");
+
+    // });
+    //each element with the class "incorrect" will be an index in the array incorrect
+    incorrect = document.querySelectorAll(".incorrect");
+    // for (x = 0; x < incorrect.length; x++) {
+        //     incorrect[x].addEventListener("click", function (event) {
+        //     event.target.setAttribute("style", "background-color: #C93516");
+        // }); }
 
     });
-//each element with the class "incorrect" will be an index in the array incorrect
-    incorrect = document.querySelectorAll(".incorrect");
-    for(x=0; x < incorrect.length; x++) {
-        incorrect[x].addEventListener("click", function (event) {
-        event.target.setAttribute("style", "background-color: #C93516");
-    }); }
-    
-
-   
-});
 
 var currentQ = 0;
 var questionBlock;
@@ -113,19 +131,48 @@ var isCorrect4 = [false, false, false];
 function checkCorrectness() {
     if (isCorrect1[currentQ] === true) {
         choice1.setAttribute("id", "correct");
-    } else {choice1.removeAttribute("id");
-            choice1.setAttribute("class", "incorrect");
+    } else {
+        choice1.removeAttribute("id");
+        choice1.setAttribute("class", "incorrect");
     }
-    if(isCorrect2[currentQ] === true) {
+    if (isCorrect2[currentQ] === true) {
         choice2.setAttribute("id", "correct");
-    } else {choice2.removeAttribute("id");
-            choice2.setAttribute("class", "incorrect");}
+    } else {
+        choice2.removeAttribute("id");
+        choice2.setAttribute("class", "incorrect");
+    }
     if (isCorrect3[currentQ] === true) {
         choice3.setAttribute("id", "correct");
-    } else {choice3.removeAttribute("id");
-    choice3.setAttribute("class", "incorrect");}
+    } else {
+        choice3.removeAttribute("id");
+        choice3.setAttribute("class", "incorrect");
+    }
     if (isCorrect4[currentQ] === true) {
         choice4.setAttribute("id", "correct");
-    } else {choice4.removeAttribute("id");
-        choice4.setAttribute("class", "incorrect");}
+    } else {
+        choice4.removeAttribute("id");
+        choice4.setAttribute("class", "incorrect");
+    }
 }
+
+var timerEl = document.querySelector("#timer");
+var secondsLeft = 15;
+function setTime() {
+    // Sets interval in variable
+    var timerInterval = setInterval(function() {
+      secondsLeft--;
+      timerEl.textContent = secondsLeft + " seconds left";
+  
+      if(secondsLeft === 0) {
+        // Stops execution of action at set interval
+        clearInterval(timerInterval);
+        // Calls function to create and append image
+        timeoutMessage();
+      }
+  
+    }, 1000);
+  }
+
+  function timeoutMessage(){
+    timerEl.textContent = "You ran out of time!  Click 'Next Question' to move to the next question";
+  }
