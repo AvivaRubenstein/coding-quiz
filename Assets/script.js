@@ -56,16 +56,19 @@ begin.addEventListener("click", function (event) {
     //sets us up to move to the next question in our questionBlock
     currentQ++;
 
+
+
     correct = document.querySelector("#correct");
     correct.addEventListener("click", function (event) {
-        correct.setAttribute("style", "background-color: #00ff00;");
+        event.target.setAttribute("style", "background-color: #00ff00;");
 
     });
-
+//each element with the class "incorrect" will be an index in the array incorrect
     incorrect = document.querySelectorAll(".incorrect");
-    incorrect.addEventListener("click", function (event) {
-        incorrect.setAttribute("style", "background-color: #C93516");
-    });
+    for(x=0; x < incorrect.length; x++) {
+        incorrect[x].addEventListener("click", function (event) {
+        event.target.setAttribute("style", "background-color: #C93516");
+    }); }
     
 
    
