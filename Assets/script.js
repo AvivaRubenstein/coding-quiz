@@ -5,7 +5,8 @@ var choice2 = document.createElement("button");
 var choice3 = document.createElement("button");
 var choice4 = document.createElement("button");
 var correct;
-
+var incorrect;
+var choice;
 
 
 var h1 = document.createElement("h1");
@@ -59,7 +60,15 @@ begin.addEventListener("click", function (event) {
     correct.addEventListener("click", function (event) {
         correct.setAttribute("style", "background-color: #00ff00;");
 
-    })
+    });
+
+    incorrect = document.querySelectorAll(".incorrect");
+    incorrect.addEventListener("click", function (event) {
+        incorrect.setAttribute("style", "background-color: #C93516");
+    });
+    
+
+   
 });
 
 var currentQ = 0;
@@ -101,14 +110,19 @@ var isCorrect4 = [false, false, false];
 function checkCorrectness() {
     if (isCorrect1[currentQ] === true) {
         choice1.setAttribute("id", "correct");
-    } else {choice1.removeAttribute("id");}
+    } else {choice1.removeAttribute("id");
+            choice1.setAttribute("class", "incorrect");
+    }
     if(isCorrect2[currentQ] === true) {
         choice2.setAttribute("id", "correct");
-    } else {choice2.removeAttribute("id");}
+    } else {choice2.removeAttribute("id");
+            choice2.setAttribute("class", "incorrect");}
     if (isCorrect3[currentQ] === true) {
         choice3.setAttribute("id", "correct");
-    } else {choice3.removeAttribute("id");}
+    } else {choice3.removeAttribute("id");
+    choice3.setAttribute("class", "incorrect");}
     if (isCorrect4[currentQ] === true) {
         choice4.setAttribute("id", "correct");
-    } else {choice4.removeAttribute("id");}
+    } else {choice4.removeAttribute("id");
+        choice4.setAttribute("class", "incorrect");}
 }
