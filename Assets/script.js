@@ -11,6 +11,8 @@ var btnClicked;
 //start with the numRight and Wrong equal to 0, need to increment the relvant var by 1 after each answer
 var numRight=0;
 var numWrong=0;
+var finalScore = numRight - numWrong;
+var userName;
 
 
 var h1 = document.createElement("h1");
@@ -28,7 +30,7 @@ container.appendChild(begin);
 function clearHTML() {
     $("h1").remove();
     $("p").remove();
-    begin.innerHTML = "<button id = 'next' > Next Question </button>";
+    $("#begin").remove();
 }
 
 
@@ -42,7 +44,7 @@ begin.addEventListener("click", function (event) {
     //for each question, we are creating an h1 element and 4 button elements
     //they are declared as variables at the top of the page so we aren't limited by scope
     //the HTML content for each is put in with .innerHTML, and we must append them to the container for them to actually become part of the HTML file
-    switchQuestion();
+    setQuestion();
     //this sets the timer function (see function below)
     
     question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
@@ -64,9 +66,36 @@ begin.addEventListener("click", function (event) {
     //checks each choice to see if it is marked as correct 
     checkCorrectness();
 
-    //sets us up to move to the next question in our questionBlock
-    currentQ++;
+    container.addEventListener("click", function (event) {
+        for (x = 0; x < incorrect.length; x++) {
+            btnClicked = event.target;
+            if (btnClicked === correct) {
+                // correct.firstChild.setAttribute("style", "background-color: #00ff00;");
+                numRight++;
+                    
+                    
+            } else if (btnClicked === incorrect[x]) {
+                // incorrect[x].firstChild.setAttribute("style", "background-color: #C93516");
+                secondsLeft-=5;
+                numWrong++;
+                    
+            }
+            
+            
+        }
 
+        //sets us up to move to the next question in our questionBlock
+        currentQ++;
+        if(currentQ  === promptBank.length){
+            timeoutMessage();
+        }
+        setQuestion();
+        choice1.innerHTML = `<button class = 'choice' > ${questionBlock.ans1} </button>`;
+        choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
+        choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
+        choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
+        checkCorrectness();
+    }); 
 
     function setTime() {
         // Sets interval in variable
@@ -74,20 +103,9 @@ begin.addEventListener("click", function (event) {
           secondsLeft--;
           timerEl.textContent = secondsLeft + " seconds left";
           
-          container.addEventListener("click", function (event) {
-            for (x = 0; x < incorrect.length; x++) {
-                btnClicked = event.target;
-                if (btnClicked === correct) {
-                    correct.firstChild.setAttribute("style", "background-color: #00ff00;");
-                    clearInterval(timerInterval);
-                } else if (btnClicked === incorrect[x]) {
-                    incorrect[x].firstChild.setAttribute("style", "background-color: #C93516");
-                    clearInterval(timerInterval);
-                }
-            }
-        }); 
+          
 
-          if(secondsLeft === 0) {
+          if(secondsLeft <= 0) {
             // Stops execution of action at set interval
             clearInterval(timerInterval);
             // Calls function to create and append image
@@ -101,22 +119,15 @@ begin.addEventListener("click", function (event) {
 
     choice = document.querySelectorAll(".choice");
     correct = document.querySelector("#correct");
-    // correct.addEventListener("click", function (event) {
-    //     event.target.setAttribute("style", "background-color: #00ff00;");
-
-    // });
     //each element with the class "incorrect" will be an index in the array incorrect
     incorrect = document.querySelectorAll(".incorrect");
-    // for (x = 0; x < incorrect.length; x++) {
-        //     incorrect[x].addEventListener("click", function (event) {
-        //     event.target.setAttribute("style", "background-color: #C93516");
-        // }); }
+
 
     });
 
 var currentQ = 0;
 var questionBlock;
-function switchQuestion() {
+function setQuestion() {
     questionBlock = {
         prompt: promptBank[currentQ],
         ans1: ans1Bank[currentQ],
@@ -178,9 +189,16 @@ function checkCorrectness() {
 }
 
 var timerEl = document.querySelector("#timer");
-var secondsLeft = 15;
+var secondsLeft = 70;
 
 
   function timeoutMessage(){
-    timerEl.textContent = "You ran out of time!  Click 'Next Question' to move to the next question";
+    $("#timer").remove();
+    var quizOver = document.createElement("h2");
+    quizOver.innerHTML=`<h2>All done!  Your final score is ${finalScore} . </h2>`;
+    container.appendChild(quizOver);
+    var enterName = document.createElement("form");
+    enterName.innerHTML = "<form>  <label for='name'> Enter your name to save your high score:</label> <br> <input type='text' id='userName' name='name'><br> <input type='submit' value='Submit'></form>";
+    container.appendChild(enterName);
+    userName = querySelector("#userName");
   }
