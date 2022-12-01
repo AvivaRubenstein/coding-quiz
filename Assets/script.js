@@ -35,13 +35,16 @@ function clearHTML() {
 
 //when the begin button is pressed, the intro content will disappear and the first question will be displayed.
 begin.addEventListener("click", function (event) {
+    //TODO: look into event bubbling!
+    event.stopPropagation();
     clearHTML();
+    setTime();
     //for each question, we are creating an h1 element and 4 button elements
     //they are declared as variables at the top of the page so we aren't limited by scope
     //the HTML content for each is put in with .innerHTML, and we must append them to the container for them to actually become part of the HTML file
     switchQuestion();
     //this sets the timer function (see function below)
-    setTime();
+    
     question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
     container.appendChild(question);
     var text = "text";
@@ -65,16 +68,35 @@ begin.addEventListener("click", function (event) {
     currentQ++;
 
 
-    container.addEventListener("click", function (event) {
-        for (x = 0; x < incorrect.length; x++) {
-            btnClicked = event.target;
-            if (btnClicked === correct) {
-                correct.setAttribute("style", "background-color: #00ff00;");
-            } else if (btnClicked === incorrect[x]) {
-                incorrect[x].setAttribute("style", "background-color: #C93516");
+    function setTime() {
+        // Sets interval in variable
+        var timerInterval = setInterval(function() {
+          secondsLeft--;
+          timerEl.textContent = secondsLeft + " seconds left";
+          
+          container.addEventListener("click", function (event) {
+            for (x = 0; x < incorrect.length; x++) {
+                btnClicked = event.target;
+                if (btnClicked === correct) {
+                    correct.firstChild.setAttribute("style", "background-color: #00ff00;");
+                    clearInterval(timerInterval);
+                } else if (btnClicked === incorrect[x]) {
+                    incorrect[x].firstChild.setAttribute("style", "background-color: #C93516");
+                    clearInterval(timerInterval);
+                }
             }
-        }
-    }); 
+        }); 
+
+          if(secondsLeft === 0) {
+            // Stops execution of action at set interval
+            clearInterval(timerInterval);
+            // Calls function to create and append image
+            timeoutMessage();
+          }
+      
+        }, 1000);
+      }
+  
 
 
     choice = document.querySelectorAll(".choice");
@@ -157,21 +179,7 @@ function checkCorrectness() {
 
 var timerEl = document.querySelector("#timer");
 var secondsLeft = 15;
-function setTime() {
-    // Sets interval in variable
-    var timerInterval = setInterval(function() {
-      secondsLeft--;
-      timerEl.textContent = secondsLeft + " seconds left";
-  
-      if(secondsLeft === 0) {
-        // Stops execution of action at set interval
-        clearInterval(timerInterval);
-        // Calls function to create and append image
-        timeoutMessage();
-      }
-  
-    }, 1000);
-  }
+
 
   function timeoutMessage(){
     timerEl.textContent = "You ran out of time!  Click 'Next Question' to move to the next question";
