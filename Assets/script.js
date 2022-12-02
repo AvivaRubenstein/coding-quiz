@@ -9,10 +9,14 @@ var incorrect;
 var choice;
 var btnClicked;
 //start with the numRight and Wrong equal to 0, need to increment the relvant var by 1 after each answer
-var numRight=0;
-var numWrong=0;
-var finalScore = numRight - numWrong;
+var numRight = 0;
+var numWrong = 0;
+var finalScore;
 var userName;
+var submitName;
+var listNames = [];
+var listScores = [];
+var form;
 
 
 var h1 = document.createElement("h1");
@@ -46,7 +50,7 @@ begin.addEventListener("click", function (event) {
     //the HTML content for each is put in with .innerHTML, and we must append them to the container for them to actually become part of the HTML file
     setQuestion();
     //this sets the timer function (see function below)
-    
+
     question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
     container.appendChild(question);
     var text = "text";
@@ -72,49 +76,52 @@ begin.addEventListener("click", function (event) {
             if (btnClicked === correct) {
                 // correct.firstChild.setAttribute("style", "background-color: #00ff00;");
                 numRight++;
-                    
-                    
+
+
             } else if (btnClicked === incorrect[x]) {
                 // incorrect[x].firstChild.setAttribute("style", "background-color: #C93516");
-                secondsLeft-=5;
+                secondsLeft -= 5;
                 numWrong++;
-                    
+
             }
-            
-            
+
+
         }
 
         //sets us up to move to the next question in our questionBlock
         currentQ++;
-        if(currentQ  === promptBank.length){
+        if (currentQ === promptBank.length) {
             timeoutMessage();
+            //TODO erase question block
+        } else {
+            setQuestion();
+            question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
+            choice1.innerHTML = `<button class = 'choice' > ${questionBlock.ans1} </button>`;
+            choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
+            choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
+            choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
+            checkCorrectness();
         }
-        setQuestion();
-        choice1.innerHTML = `<button class = 'choice' > ${questionBlock.ans1} </button>`;
-        choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
-        choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
-        choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
-        checkCorrectness();
-    }); 
+    });
 
     function setTime() {
         // Sets interval in variable
-        var timerInterval = setInterval(function() {
-          secondsLeft--;
-          timerEl.textContent = secondsLeft + " seconds left";
-          
-          
+        var timerInterval = setInterval(function () {
+            secondsLeft--;
+            timerEl.textContent = secondsLeft + " seconds left";
 
-          if(secondsLeft <= 0) {
-            // Stops execution of action at set interval
-            clearInterval(timerInterval);
-            // Calls function to create and append image
-            timeoutMessage();
-          }
-      
+
+
+            if (secondsLeft <= 0) {
+                // Stops execution of action at set interval
+                clearInterval(timerInterval);
+                // Calls function to create and append image
+                timeoutMessage();
+            }
+
         }, 1000);
-      }
-  
+    }
+
 
 
     choice = document.querySelectorAll(".choice");
@@ -123,7 +130,7 @@ begin.addEventListener("click", function (event) {
     incorrect = document.querySelectorAll(".incorrect");
 
 
-    });
+});
 
 var currentQ = 0;
 var questionBlock;
@@ -192,13 +199,31 @@ var timerEl = document.querySelector("#timer");
 var secondsLeft = 70;
 
 
-  function timeoutMessage(){
+function timeoutMessage() {
     $("#timer").remove();
     var quizOver = document.createElement("h2");
-    quizOver.innerHTML=`<h2>All done!  Your final score is ${finalScore} . </h2>`;
+    finalScore = numRight - numWrong;
+    quizOver.innerHTML = `<h2>All done!  Your final score is ${finalScore} . </h2>`;
     container.appendChild(quizOver);
     var enterName = document.createElement("form");
-    enterName.innerHTML = "<form>  <label for='name'> Enter your name to save your high score:</label> <br> <input type='text' id='userName' name='name'><br> <input type='submit' value='Submit'></form>";
+    enterName.innerHTML = "<form id= form>  <label for='name'> Enter your name to save your high score:</label> <br> <input type='text' id='userName' name='name'><br> <input type='submit' value='Submit'></form>";
     container.appendChild(enterName);
-    userName = querySelector("#userName");
-  }
+    userName = document.querySelector("#userName");
+    form = document.querySelector("#form");
+
+    //event listener for user clicking the submit button, will run handleSubmit function
+    form.on('submit', handleSubmit);
+
+}
+
+function handleSubmit(event) {
+    //prevent default submit button functionality
+    event.preventDefault();
+    //we want to store the current user's name and their score in arrays so that we can create a list of all high scores
+    listNames.push(userName.val());
+    listScores.push(finalScore.val());
+    userName = '';
+    finalScore = '';
+}
+
+// function showHighScores()
