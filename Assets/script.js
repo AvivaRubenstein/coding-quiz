@@ -20,21 +20,22 @@ var form;
 
 
 var h1 = document.createElement("h1");
-h1.innerHTML = " <h1>Coding Quiz Challenge</h1>";
+h1.innerHTML = " Coding Quiz Challenge";
 container.appendChild(h1);
 var p = document.createElement("p");
-p.innerHTML = "<p>Try to answer the following code-related questions to practice for coding interviews! You will have 10 seconds to answer each question.  Click 'Begin' to start!</p>";
+p.innerHTML = "Try to answer the following code-related questions to practice for coding interviews! You will have 10 seconds to answer each question.  Click 'Begin' to start!";
 container.appendChild(p);
 var begin = document.createElement("button");
-begin.innerHTML = "<button id = 'begin'>Begin</button>";
+begin.innerHTML = "Begin";
+begin.setAttribute("id", "begin");
 container.appendChild(begin);
 
 
 //when called, this function will clear the HTML content from the intro
 function clearHTML() {
-    $("h1").remove();
-    $("p").remove();
-    $("#begin").remove();
+    h1.remove();
+    p.remove();
+    begin.remove();
 }
 
 
@@ -51,27 +52,35 @@ begin.addEventListener("click", function (event) {
     setQuestion();
     //this sets the timer function (see function below)
 
-    question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
+    question.innerHTML = `${questionBlock.prompt}`;
     container.appendChild(question);
     var text = "text";
     //the correct answer is identified here with the id "correct" so that we can treat all correct answers the same when when clicked
-    choice1.innerHTML = `<button class = 'choice' > ${questionBlock.ans1} </button>`;
+    choice1.innerHTML = ` ${questionBlock.ans1}`;
+    choice1.setAttribute("class", "choice");
     container.appendChild(choice1);
 
-    choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
+    choice2.innerHTML = `${questionBlock.ans2}`;
+    choice2.setAttribute("class", "choice");
     container.appendChild(choice2);
 
-    choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
+    choice3.innerHTML = `${questionBlock.ans3}`;
+    choice3.setAttribute("class", "choice");
     container.appendChild(choice3);
 
-    choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
+    choice4.innerHTML = `${questionBlock.ans4}`;
+    choice4.setAttribute("class", "choice");
     container.appendChild(choice4);
 
     //checks each choice to see if it is marked as correct 
     checkCorrectness();
 
+    //this event listener looks for when the user clicks one of the answer options.  If they click the correct one, the number
+    //of qs they got right increases by one, and if they clicked an incorrect one, they lose 5 seconds of time and the number
+    //of qs they got wrong goes up by one.
+    //this continues as long as we have
     container.addEventListener("click", function (event) {
-        for (x = 0; x < incorrect.length; x++) {
+        for (x = 0; x < promptBank.length; x++) {
             btnClicked = event.target;
             if (btnClicked === correct) {
                 // correct.firstChild.setAttribute("style", "background-color: #00ff00;");
@@ -90,16 +99,28 @@ begin.addEventListener("click", function (event) {
 
         //sets us up to move to the next question in our questionBlock
         currentQ++;
-        if (currentQ === promptBank.length) {
-            timeoutMessage();
+        if (currentQ >= promptBank.length) {
             //TODO erase question block
+            question.remove();
+            choice1.remove();
+            choice2.remove();
+            choice3.remove();
+            choice4.remove();
+            
+            timeoutMessage();
+            
+
         } else {
             setQuestion();
-            question.innerHTML = `<h1> ${questionBlock.prompt}</h1 `;
-            choice1.innerHTML = `<button class = 'choice' > ${questionBlock.ans1} </button>`;
-            choice2.innerHTML = `<button class = 'choice'>${questionBlock.ans2}</button>`;
-            choice3.innerHTML = `<button class = 'choice' >${questionBlock.ans3}</button>`;
-            choice4.innerHTML = `<button class = 'choice'>${questionBlock.ans4}</button>`;
+            question.innerHTML = `${questionBlock.prompt}`;
+            choice1.innerHTML = `${questionBlock.ans1}`;
+            choice1.setAttribute("class", "choice");
+            choice2.innerHTML = `${questionBlock.ans2}`;
+            choice2.setAttribute("class", "choice");
+            choice3.innerHTML = `${questionBlock.ans3}`;
+            choice3.setAttribute("class", "choice");
+            choice4.innerHTML = `${questionBlock.ans4}`;
+            choice4.setAttribute("class", "choice");
             checkCorrectness();
         }
     });
@@ -113,6 +134,7 @@ begin.addEventListener("click", function (event) {
 
 
             if (secondsLeft <= 0) {
+        //TODO: clear out question block when timer runs out, not just when we run out of qs
                 // Stops execution of action at set interval
                 clearInterval(timerInterval);
                 // Calls function to create and append image
@@ -173,25 +195,25 @@ function checkCorrectness() {
         choice1.setAttribute("id", "correct");
     } else {
         choice1.removeAttribute("id");
-        choice1.setAttribute("class", "incorrect");
+        choice1.setAttribute("class", "incorrect choice");
     }
     if (isCorrect2[currentQ] === true) {
         choice2.setAttribute("id", "correct");
     } else {
         choice2.removeAttribute("id");
-        choice2.setAttribute("class", "incorrect");
+        choice2.setAttribute("class", "incorrect choice");
     }
     if (isCorrect3[currentQ] === true) {
         choice3.setAttribute("id", "correct");
     } else {
         choice3.removeAttribute("id");
-        choice3.setAttribute("class", "incorrect");
+        choice3.setAttribute("class", "incorrect choice");
     }
     if (isCorrect4[currentQ] === true) {
         choice4.setAttribute("id", "correct");
     } else {
         choice4.removeAttribute("id");
-        choice4.setAttribute("class", "incorrect");
+        choice4.setAttribute("class", "incorrect choice");
     }
 }
 
@@ -219,11 +241,5 @@ function timeoutMessage() {
 function handleSubmit(event) {
     //prevent default submit button functionality
     event.preventDefault();
-    //we want to store the current user's name and their score in arrays so that we can create a list of all high scores
-    listNames.push(userName.val());
-    listScores.push(finalScore.val());
-    userName = '';
-    finalScore = '';
+  
 }
-
-// function showHighScores()
