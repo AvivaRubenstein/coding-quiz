@@ -1,22 +1,22 @@
 var container = document.querySelector(".container");
+var qCard = document.querySelector("#qCard");
+var qSlot = document.querySelector("#qSlot");
 var question = document.createElement("h1");
 var choice1 = document.createElement("button");
 var choice2 = document.createElement("button");
 var choice3 = document.createElement("button");
 var choice4 = document.createElement("button");
 var correct;
-var incorrect;
 var choice;
 var btnClicked;
 //start with the numRight and Wrong equal to 0, need to increment the relvant var by 1 after each answer
 var numRight = 0;
-var numWrong = 0;
-var finalScore;
 var userName;
 var submitName;
 var listNames = [];
 var listScores = [];
 var form;
+var submitBtn;
 
 
 var h1 = document.createElement("h1");
@@ -53,24 +53,26 @@ begin.addEventListener("click", function (event) {
     //this sets the timer function (see function below)
 
     question.innerHTML = `${questionBlock.prompt}`;
-    container.appendChild(question);
-    var text = "text";
+    qSlot.appendChild(question);
+    
     //the correct answer is identified here with the id "correct" so that we can treat all correct answers the same when when clicked
     choice1.innerHTML = ` ${questionBlock.ans1}`;
     choice1.setAttribute("class", "choice");
-    container.appendChild(choice1);
+    qCard.appendChild(choice1);
 
     choice2.innerHTML = `${questionBlock.ans2}`;
     choice2.setAttribute("class", "choice");
-    container.appendChild(choice2);
+    qCard.appendChild(choice2);
 
     choice3.innerHTML = `${questionBlock.ans3}`;
     choice3.setAttribute("class", "choice");
-    container.appendChild(choice3);
+    qCard.appendChild(choice3);
 
     choice4.innerHTML = `${questionBlock.ans4}`;
     choice4.setAttribute("class", "choice");
-    container.appendChild(choice4);
+    qCard.appendChild(choice4);
+
+    choice = document.querySelectorAll(".choice");
 
     //checks each choice to see if it is marked as correct 
     checkCorrectness();
@@ -78,52 +80,47 @@ begin.addEventListener("click", function (event) {
     //this event listener looks for when the user clicks one of the answer options.  If they click the correct one, the number
     //of qs they got right increases by one, and if they clicked an incorrect one, they lose 5 seconds of time and the number
     //of qs they got wrong goes up by one.
-    //this continues as long as we have
-    container.addEventListener("click", function (event) {
-        for (x = 0; x < promptBank.length; x++) {
+    //this continues as long as we have more q prompts left
+    for (x = 0; x < choice.length; x++) {
+        console.log(choice.length)
+        choice[x].addEventListener("click", function (event) {
+
             btnClicked = event.target;
             if (btnClicked === correct) {
-                // correct.firstChild.setAttribute("style", "background-color: #00ff00;");
                 numRight++;
-
-
-            } else if (btnClicked === incorrect[x]) {
-                // incorrect[x].firstChild.setAttribute("style", "background-color: #C93516");
+            } else {
                 secondsLeft -= 5;
-                numWrong++;
 
             }
 
+            //sets us up to move to the next question in our questionBlock
+            currentQ++;
+            if (currentQ >= promptBank.length) {
+                //TODO erase question block
+                question.remove();
+                choice1.remove();
+                choice2.remove();
+                choice3.remove();
+                choice4.remove();
 
-        }
+                timeoutMessage();
 
-        //sets us up to move to the next question in our questionBlock
-        currentQ++;
-        if (currentQ >= promptBank.length) {
-            //TODO erase question block
-            question.remove();
-            choice1.remove();
-            choice2.remove();
-            choice3.remove();
-            choice4.remove();
-            
-            timeoutMessage();
-            
 
-        } else {
-            setQuestion();
-            question.innerHTML = `${questionBlock.prompt}`;
-            choice1.innerHTML = `${questionBlock.ans1}`;
-            choice1.setAttribute("class", "choice");
-            choice2.innerHTML = `${questionBlock.ans2}`;
-            choice2.setAttribute("class", "choice");
-            choice3.innerHTML = `${questionBlock.ans3}`;
-            choice3.setAttribute("class", "choice");
-            choice4.innerHTML = `${questionBlock.ans4}`;
-            choice4.setAttribute("class", "choice");
-            checkCorrectness();
-        }
-    });
+            } else {
+                setQuestion();
+                question.innerHTML = `${questionBlock.prompt}`;
+                choice1.innerHTML = `${questionBlock.ans1}`;
+                choice1.setAttribute("class", "choice");
+                choice2.innerHTML = `${questionBlock.ans2}`;
+                choice2.setAttribute("class", "choice");
+                choice3.innerHTML = `${questionBlock.ans3}`;
+                choice3.setAttribute("class", "choice");
+                choice4.innerHTML = `${questionBlock.ans4}`;
+                choice4.setAttribute("class", "choice");
+                checkCorrectness();
+            }
+        });
+    }
 
     function setTime() {
         // Sets interval in variable
@@ -134,9 +131,15 @@ begin.addEventListener("click", function (event) {
 
 
             if (secondsLeft <= 0) {
-        //TODO: clear out question block when timer runs out, not just when we run out of qs
+                //TODO: clear out question block when timer runs out, not just when we run out of qs
                 // Stops execution of action at set interval
                 clearInterval(timerInterval);
+                //TODO erase question block
+                question.remove();
+                choice1.remove();
+                choice2.remove();
+                choice3.remove();
+                choice4.remove();
                 // Calls function to create and append image
                 timeoutMessage();
             }
@@ -148,8 +151,6 @@ begin.addEventListener("click", function (event) {
 
     choice = document.querySelectorAll(".choice");
     correct = document.querySelector("#correct");
-    //each element with the class "incorrect" will be an index in the array incorrect
-    incorrect = document.querySelectorAll(".incorrect");
 
 
 });
@@ -195,26 +196,23 @@ function checkCorrectness() {
         choice1.setAttribute("id", "correct");
     } else {
         choice1.removeAttribute("id");
-        choice1.setAttribute("class", "incorrect choice");
     }
     if (isCorrect2[currentQ] === true) {
         choice2.setAttribute("id", "correct");
     } else {
         choice2.removeAttribute("id");
-        choice2.setAttribute("class", "incorrect choice");
     }
     if (isCorrect3[currentQ] === true) {
         choice3.setAttribute("id", "correct");
     } else {
         choice3.removeAttribute("id");
-        choice3.setAttribute("class", "incorrect choice");
     }
     if (isCorrect4[currentQ] === true) {
         choice4.setAttribute("id", "correct");
     } else {
         choice4.removeAttribute("id");
-        choice4.setAttribute("class", "incorrect choice");
     }
+    correct = document.querySelector("#correct");
 }
 
 var timerEl = document.querySelector("#timer");
@@ -222,24 +220,26 @@ var secondsLeft = 70;
 
 
 function timeoutMessage() {
+    //this function should get rid of the timer element, and create a message saying the quiz is over, calculate and report the current quiz score
+    //and create a form for the user to submit their name to be stored in the high score list
     $("#timer").remove();
     var quizOver = document.createElement("h2");
-    finalScore = numRight - numWrong;
-    quizOver.innerHTML = `<h2>All done!  Your final score is ${finalScore} . </h2>`;
+    quizOver.innerHTML = `All done!  Your final score is ${numRight}.`;
     container.appendChild(quizOver);
     var enterName = document.createElement("form");
-    enterName.innerHTML = "<form id= form>  <label for='name'> Enter your name to save your high score:</label> <br> <input type='text' id='userName' name='name'><br> <input type='submit' value='Submit'></form>";
+    enterName.innerHTML = "<label for='name'> Enter your name to save your high score:</label> <br> <input type='text' id='userName' name='name'><br> <input type='submit' value='Submit' id='submit'>";
+    enterName.setAttribute = ("id", "form");
     container.appendChild(enterName);
     userName = document.querySelector("#userName");
     form = document.querySelector("#form");
+    submitBtn = document.querySelector("#submit");
 
-    //event listener for user clicking the submit button, will run handleSubmit function
-    form.on('submit', handleSubmit);
 
+    submitBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        localStorage.setItem("name", "userName");
+        
+    } );
+    
 }
 
-function handleSubmit(event) {
-    //prevent default submit button functionality
-    event.preventDefault();
-  
-}
