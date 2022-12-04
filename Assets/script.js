@@ -54,7 +54,7 @@ begin.addEventListener("click", function (event) {
 
     question.innerHTML = `${questionBlock.prompt}`;
     qSlot.appendChild(question);
-    
+
     //the correct answer is identified here with the id "correct" so that we can treat all correct answers the same when when clicked
     choice1.innerHTML = ` ${questionBlock.ans1}`;
     choice1.setAttribute("class", "choice");
@@ -82,7 +82,7 @@ begin.addEventListener("click", function (event) {
     //of qs they got wrong goes up by one.
     //this continues as long as we have more q prompts left
     for (x = 0; x < choice.length; x++) {
-        console.log(choice.length)
+        // console.log(choice.length)
         choice[x].addEventListener("click", function (event) {
 
             btnClicked = event.target;
@@ -235,11 +235,29 @@ function timeoutMessage() {
     submitBtn = document.querySelector("#submit");
 
 
+
+
     submitBtn.addEventListener("click", function (event) {
         event.preventDefault();
-        localStorage.setItem("name", "userName");
-        
-    } );
-    
+        var scoreStorage = {
+            currentUser: userName.value,
+            currentScore: numRight
+        };
+        var scoresArray = [];
+        var lastPlayer = JSON.parse(localStorage.getItem("score-name"));
+
+        if (lastPlayer === null) {
+            scoresArray.push(scoreStorage);
+            localStorage.setItem("score-name", JSON.stringify(scoresArray));
+        } else {
+            scoresArray = JSON.parse(localStorage.getItem("score-name"));
+
+            scoresArray.push(scoreStorage);
+            localStorage.setItem("score-name", JSON.stringify(scoresArray));
+        }
+
+
+    });
+
 }
 
